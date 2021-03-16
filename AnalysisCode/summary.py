@@ -6,7 +6,7 @@ import sys
 from matplotlib import pyplot as plt
 import numpy
 
-filename = 'average_tput_per_run.csv'
+filename = 'AnalysisCode\\average_tput_per_run.csv'
 
 
 class Flow:
@@ -27,9 +27,10 @@ class Protocal:
         self.name = name
         self.flows = []
         self.average = 0
-        self.averageFairnessBBR = []
-        self.averageFairnessHYBLA = []
-        self.averageFairnessCUBIC = []
+        self.FairnessCUBIC = []
+        self.FairnessBBR = []
+        self.FairnessHYBLA = []
+        
 
     def addFlow(self, flow):
         self.flows.append(flow)
@@ -50,11 +51,11 @@ class Protocal:
         hyblaTotalFairness = 0
         for flow in self.flows:
             if flow.partner.cc == 'bbr':
-                self.averageFairnessBBR.append(flow.fairness)
+                self.FairnessBBR.append(flow.fairness)
             elif flow.partner.cc == 'cubic':
-                self.averageFairnessCUBIC.append(flow.fairness)
+                self.FairnessCUBIC.append(flow.fairness)
             elif flow.partner.cc == 'hybla':
-                self.averageFairnessHYBLA.append(flow.fairness)
+                self.FairnessHYBLA.append(flow.fairness)
 
 
 class Summary:
@@ -128,22 +129,25 @@ class Summary:
         # nineties.boxplot(ninety, notch='True', showfliers=False)
 
     def plotFairness(self):
-        fig1, (bbrFairness, hyblaFairness, cubicFairness) = plt.subplots(3)
+        fig1, (cubicFairness, bbrFairness, hyblaFairness) = plt.subplots(3)
         for p in self.protocols:
             p.computeAverageFairness()
-            if p.name != 'cubic':
+            if p.name == 'cubic':
                 cubicFairness.set_title(
-                    f'Fairness Distribution CUBIC vs X')
-                cubic = [p.averageFairnessBBR, p.averageFairnessHYBLA]
-                cubicFairness
-                cubicFairness.boxplot(cubic)
-            if p.name != 'bbr':
-                bbrFairness.set_title(f'Fairness Distribution {p.name} vs BBR')
-                bbrFairness.boxplot(p.averageFairnessBBR)
-            if p.name != 'hybla':
-                hyblaFairness.set_title(
-                    f'Fairness Distribution {p.name} vs HYBLA')
-                hyblaFairness.boxplot(p.averageFairnessHYBLA)
+                        f'Fairness Distribution CUBIC vs X')
+                cubic = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
+                cubicFairness.set_xticklabels(['cubic','bbr','hybla'])
+                cubicFairness.boxplot(cubic,notch='True', showfliers=False)
+            elif p.name == 'bbr':
+                bbrFairness.set_title(f'Fairness Distribution BBR vs X')
+                bbr = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
+                bbrFairness.set_xticklabels(['cubic','bbr','hybla'])
+                bbrFairness.boxplot(bbr,notch='True', showfliers=False)
+            elif p.name == 'hybla':
+                hyblaFairness.set_title(f'Fairness Distribution HYBLA vs X')
+                hybla = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
+                hyblaFairness.set_xticklabels(['cubic','bbr','hybla'])
+                hyblaFairness.boxplot(hybla,notch='True', showfliers=False)
         plt.show()
 
     def printSummaries(self):
