@@ -42,10 +42,10 @@ class Trial:
     def setHosts(self):
         self.hosts = []
         dictionary = {
-            "cubic" : "mlcneta.cs.wpi.edu",
-            "bbr"   : "mlcnetc.cs.wpi.edu",
-            "hybla" : "mlcnetc.cs.wpi.edu",
-            "same"  : "mlcnetd.cs.wpi.edu" 
+            "cubic": "mlcneta.cs.wpi.edu",
+            "bbr": "mlcnetb.cs.wpi.edu",
+            "hybla": "mlcnetc.cs.wpi.edu",
+            "same": "mlcnetd.cs.wpi.edu"
         }
         if self.cc[0] == self.cc[1]:
             self.hosts.append(dictionary.get(self.cc[0]))
