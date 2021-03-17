@@ -35,7 +35,6 @@ class Trial:
             f'sudo sysctl -w net.ipv4.tcp_mem=\'{self.tcp_mem}\'',
             f'sudo sysctl -w net.ipv4.tcp_wmem=\'{self.tcp_wmem}\'',
             f'sudo sysctl -w net.ipv4.tcp_rmem=\'{self.tcp_rmem}\'',
-            'sudo sysctl -p'
         ]
         self.graphCommand = ''
 
