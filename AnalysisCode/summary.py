@@ -30,7 +30,6 @@ class Protocal:
         self.FairnessCUBIC = []
         self.FairnessBBR = []
         self.FairnessHYBLA = []
-        
 
     def addFlow(self, flow):
         self.flows.append(flow)
@@ -56,6 +55,12 @@ class Protocal:
                 self.FairnessCUBIC.append(flow.fairness)
             elif flow.partner.cc == 'hybla':
                 self.FairnessHYBLA.append(flow.fairness)
+        if self.name == 'cubic':
+            self.FairnessCUBIC = [0]
+        elif self.name == 'bbr':
+            self.FairnessBBR = [0]
+        elif self.name == 'hybla':
+            self.FairnessHYBLA = [0]
 
 
 class Summary:
@@ -110,44 +115,63 @@ class Summary:
         means.set_xticklabels(labels)
         means.set_title(
             'Average Throughput Distribution per\nCongestion Control Protocol')
-        means.boxplot(mean, notch='True', showfliers=False)
-
-        # fig2, medians = plt.subplots()
-        # medians.set_xticklabels(labels)
-        # medians.set_title(
-        #     'Median Throughput Distribution per\nCongestion Control Protocol')
-        # medians.boxplot(median, notch='True', showfliers=False)
-        # fig3, tens = plt.subplots()
-        # tens.set_xticklabels(labels)
-        # tens.set_title(
-        #     'Tenth Percentile Throughput Distribution per\nCongestion Control Protocol')
-        # tens.boxplot(ten, notch='True', showfliers=False)
-        # fig3, nineties = plt.subplots()
-        # nineties.set_xticklabels(labels)
-        # nineties.set_title(
-        #     'Ninetieth Percentile Throughput Distribution per\nCongestion Control Protocol')
-        # nineties.boxplot(ninety, notch='True', showfliers=False)
+        #plt.ylim([20, 35])
+        means.boxplot(mean, showfliers=False)
+        means.set_ylabel("Throughput (Mbits)")
+        means.set_xlabel("Protocol")
+        fig2, medians = plt.subplots()
+        medians.set_xticklabels(labels)
+        medians.set_title(
+            'Median Throughput Distribution per\nCongestion Control Protocol')
+        #plt.ylim([20, 35])
+        medians.boxplot(median, showfliers=False)
+        medians.set_ylabel("Throughput (Mbits)")
+        medians.set_xlabel("Protocol")
+        fig3, tens = plt.subplots()
+        tens.set_xticklabels(labels)
+        tens.set_title(
+            'Tenth Percentile Throughput Distribution per\nCongestion Control Protocol')
+        #plt.ylim([20, 35])
+        tens.boxplot(ten, showfliers=False)
+        tens.set_ylabel("Throughput (Mbits)")
+        tens.set_xlabel("Protocol")
+        fig3, nineties = plt.subplots()
+        nineties.set_xticklabels(labels)
+        nineties.set_title(
+            'Ninetieth Percentile Throughput Distribution per\nCongestion Control Protocol')
+        #plt.ylim([20, 45])
+        nineties.boxplot(ninety, showfliers=False)
+        nineties.set_ylabel("Throughput (Mbits)")
+        nineties.set_xlabel("Protocol")
 
     def plotFairness(self):
-        fig1, (cubicFairness, bbrFairness, hyblaFairness) = plt.subplots(3)
+        fig1, cubicFairness = plt.subplots()
+        fig2, bbrFairness = plt.subplots()
+        fig3, hyblaFairness = plt.subplots()
         for p in self.protocols:
             p.computeAverageFairness()
             if p.name == 'cubic':
                 cubicFairness.set_title(
-                        f'Fairness Distribution CUBIC vs X')
-                cubic = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
-                cubicFairness.set_xticklabels(['cubic','bbr','hybla'])
-                cubicFairness.boxplot(cubic,notch='True', showfliers=False)
+                    f'Fairness Distribution CUBIC vs X')
+                cubic = [p.FairnessCUBIC, p.FairnessBBR, p.FairnessHYBLA]
+                cubicFairness.set_xticklabels(['cubic', 'bbr', 'hybla'])
+                cubicFairness.boxplot(cubic, showfliers=False)
+                cubicFairness.set_ylabel("Fairness Score")
+                cubicFairness.set_xlabel("Protocol")
             elif p.name == 'bbr':
                 bbrFairness.set_title(f'Fairness Distribution BBR vs X')
-                bbr = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
-                bbrFairness.set_xticklabels(['cubic','bbr','hybla'])
-                bbrFairness.boxplot(bbr,notch='True', showfliers=False)
+                bbr = [p.FairnessCUBIC, p.FairnessBBR, p.FairnessHYBLA]
+                bbrFairness.set_xticklabels(['cubic', 'bbr', 'hybla'])
+                bbrFairness.boxplot(bbr, showfliers=False)
+                bbrFairness.set_ylabel("Fairness Score")
+                bbrFairness.set_xlabel("Protocol")
             elif p.name == 'hybla':
                 hyblaFairness.set_title(f'Fairness Distribution HYBLA vs X')
-                hybla = [p.FairnessCUBIC,p.FairnessBBR, p.FairnessHYBLA]
-                hyblaFairness.set_xticklabels(['cubic','bbr','hybla'])
-                hyblaFairness.boxplot(hybla,notch='True', showfliers=False)
+                hybla = [p.FairnessCUBIC, p.FairnessBBR, p.FairnessHYBLA]
+                hyblaFairness.set_xticklabels(['cubic', 'bbr', 'hybla'])
+                hyblaFairness.boxplot(hybla, showfliers=False)
+                hyblaFairness.set_ylabel("Fairness Score")
+                hyblaFairness.set_xlabel("Protocol")
         plt.show()
 
     def printSummaries(self):
