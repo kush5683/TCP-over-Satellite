@@ -35,6 +35,7 @@ class Trial:
             f'sudo sysctl -w net.ipv4.tcp_mem=\'{self.tcp_mem}\'',
             f'sudo sysctl -w net.ipv4.tcp_wmem=\'{self.tcp_wmem}\'',
             f'sudo sysctl -w net.ipv4.tcp_rmem=\'{self.tcp_rmem}\'',
+            # 'sudo sysctl -p'
         ]
         self.graphCommand = ''
 
@@ -46,13 +47,16 @@ class Trial:
             "hybla": "mlcnetc.cs.wpi.edu",
             "same": "mlcnetd.cs.wpi.edu"
         }
+        
         if self.cc[0] == self.cc[1]:
             self.hosts.append(dictionary.get(self.cc[0]))
             self.hosts.append(dictionary.get('same'))
             command = f'ssh {self.user}@mlcnetd.cs.wpi.edu \"sudo sysctl -w net.ipv4.tcp_congestion_control=\'{self.cc[1]}\'\"'
         else:
             for c in self.cc:
-                self.hosts.append(dictionary(c))
+                self.hosts.append(dictionary.get(c))
+        print(self.cc)
+        print(self.hosts)
 
     def setUpLocal(self):
         sshPrefix = f'ssh {self.user}@glomma.cs.wpi.edu'
@@ -108,18 +112,19 @@ class Trial:
         time1 = time.time()
         exitCodes = []
         for host in self.hosts:
-            exitCodes.append(subprocess.Popen(["ssh", f"{self.user}@glomma.cs.wpi.edu", "iperf3", "--reverse", "-i", "\"eno2\"",
-                                               "-c", f"{host}", f"-n{self.data}", f"-p{self.ports[self.clientsRunning]}"], stdout=subprocess.DEVNULL))
+            # exitCodes.append(subprocess.Popen(["ssh", f"{self.user}@glomma.cs.wpi.edu", "iperf3", "--reverse", "-i", "\"eno2\"",
+            #                                    "-c", f"{host}", f"-n{self.data}", f"-p{self.ports[self.clientsRunning]}"], stdout=subprocess.DEVNULL))
             iperf3ClientStartCommand = f"ssh {self.user}@glomma.cs.wpi.edu \'iperf3 --reverse -i \"eno2\" -c {host} -n{self.data} -p {self.ports[self.clientsRunning]}\'&"
             self.clientsRunning += 1
             print(f'\trunning command: \n{iperf3ClientStartCommand}')
             timeStamp = self.getTimeStamp()
-            # os.system(iperf3ClientStart)
+            os.system(iperf3ClientStartCommand)
             self.commandsRun.append((timeStamp, iperf3ClientStartCommand))
-        while exitCodes[0].poll() is None or exitCodes[1].poll() is None:
-            if time.time() - time1 > 600.0:
-                break
-            pass
+        self.sleep(self.timeout)
+        # while exitCodes[0].poll() is None or exitCodes[1].poll() is None:
+        #     if time.time() - time1 > 600.0:
+        #         break
+        #     pass
 
     def startTcpdump(self):
         for host in self.hosts:

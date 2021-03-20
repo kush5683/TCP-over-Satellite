@@ -55,12 +55,12 @@ class Protocal:
                 self.FairnessCUBIC.append(flow.fairness)
             elif flow.partner.cc == 'hybla':
                 self.FairnessHYBLA.append(flow.fairness)
-        if self.name == 'cubic':
-            self.FairnessCUBIC = [0]
-        elif self.name == 'bbr':
-            self.FairnessBBR = [0]
-        elif self.name == 'hybla':
-            self.FairnessHYBLA = [0]
+        # if self.name == 'cubic':
+        #     self.FairnessCUBIC = [0]
+        # elif self.name == 'bbr':
+        #     self.FairnessBBR = [0]
+        # elif self.name == 'hybla':
+        #     self.FairnessHYBLA = [0]
 
 
 class Summary:
