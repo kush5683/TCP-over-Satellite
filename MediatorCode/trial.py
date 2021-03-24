@@ -266,3 +266,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+'''
+Run on the specific hosts for trial n, and run on glomma.cs.wpi.edu.
+Set every trial.
+'''
